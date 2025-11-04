@@ -1,0 +1,66 @@
+services:
+  # Router que dirige peticiones según el patrón
+  proxy-router:
+    build:
+      context: ../apps/proxy-router
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Puerto único de entrada
+    depends_on:
+      - service-api
+      - sidecar-proxy
+    networks:
+      - app-network
+
+  # Servicio lento que simula latencia
+  slow-svc:
+    build:
+      context: ../apps/slow-svc
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    networks:
+      - app-network
+
+  # API orquestadora que llama al servicio lento
+  service-api:
+    build:
+      context: ../apps/service-api
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DOWNSTREAM_URL=http://slow-svc:4000/work
+    depends_on:
+      - slow-svc
+    networks:
+      - app-network
+
+  # Proxy para patrón TIMEOUT (sin retries) - Solo interno
+  timeout-proxy:
+    image: envoyproxy/envoy:v1.31-latest
+    ports:
+      - "9901:9901"   # Admin interface
+    volumes:
+      - ./envoy-timeout.yaml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+      - service-api
+    networks:
+      - app-network
+
+  # Proxy para patrón SIDECAR (con retries)
+  sidecar-proxy:
+    image: envoyproxy/envoy:v1.31-latest
+    ports:
+      - "8081:8081"  # Puerto para patrón sidecar
+      - "9902:9901"   # Admin interface separada
+    volumes:
+      - ./envoy-sidecar.yaml:/etc/envoy/envoy.yaml:ro
+    depends_on:
+      - service-api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

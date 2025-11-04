@@ -1,0 +1,61 @@
+# CONFIGURACIÓN PARA PATRÓN SIDECAR COMPLETO
+# ==========================================
+# Esta configuración aplica timeouts y retries del sidecar
+
+static_resources:
+  listeners:
+  - name: listener_0
+    address:
+      socket_address:
+        protocol: TCP
+        address: 0.0.0.0
+        port_value: 8081  # Puerto diferente para sidecar
+    filter_chains:
+    - filters:
+      - name: envoy.filters.network.http_connection_manager
+        typed_config:
+          "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+          stat_prefix: sidecar_pattern
+          access_log:
+          - name: envoy.access_loggers.stdout
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.access_loggers.stream.v3.StdoutAccessLog
+          http_filters:
+          - name: envoy.filters.http.router
+            typed_config:
+              "@type": type.googleapis.com/envoy.extensions.filters.http.router.v3.Router
+          route_config:
+            name: sidecar_route
+            virtual_hosts:
+            - name: sidecar_service
+              domains: ["*"]
+              routes:
+              - match:
+                  prefix: "/api/sidecar"
+                route:
+                  cluster: service_api
+                  # TIMEOUT DEL SIDECAR: 2 segundos
+                  timeout: 2s
+                  # RETRY POLICY: Patrón sidecar con reintentos automáticos
+                  retry_policy:
+                    retry_on: 5xx,connect-failure,reset
+                    num_retries: 1  # 1 retry (total 2 intentos)
+                request_headers_to_add:
+                - header:
+                    key: "X-Request-From"
+                    value: "sidecar-envoy"
+
+  clusters:
+  - name: service_api
+    connect_timeout: 0.25s
+    type: LOGICAL_DNS
+    dns_lookup_family: V4_ONLY
+    load_assignment:
+      cluster_name: service_api
+      endpoints:
+      - lb_endpoints:
+        - endpoint:
+            address:
+              socket_address:
+                address: service-api
+                port_value: 3000
