@@ -1,5 +1,24 @@
 # 🎯 Patrones de Timeout Demo
 
+## 🎬 Demo en 3 Minutos (Teleprompter)
+
+### 🎭 Paso 1: Cliente Impaciente
+- **Config**: Cliente 1500ms vs Trabajo 1800ms
+- **Resultado**: 🔴 CORTÓ: CLIENTE
+- **Observar**: Status 0, ~1500ms
+
+### 🎭 Paso 2: Sidecar en Acción
+- **Config**: Cliente 5000ms vs Trabajo 2500ms (solo Sidecar)
+- **Resultado**: 🟡 CORTÓ: SIDECAR
+- **Observar**: `X-Envoy-Attempt-Count: 2`, ~4000ms
+
+### 🎭 Paso 3: Final Feliz
+- **Config**: Cliente 3000ms vs Trabajo 1200ms
+- **Resultado**: 🟢 CORTÓ: NADIE
+- **Observar**: Status 200, ~1200ms
+
+---
+
 **Demostración de dos patrones independientes** de manejo de timeouts con TypeScript de extremo a extremo.
 
 Este proyecto demuestra:
@@ -43,8 +62,8 @@ Este proyecto demuestra:
 
 ### Componentes:
 - **🖥️ Frontend**: React con selector de patrón independiente
-- **🔀 Router Inteligente**: Dirige `/api/timeout` directo al API, `/api/sidecar` vía Envoy
-- **🛡️ Envoy Sidecar**: Solo intercepta patrón sidecar (puerto 8080 como punto de entrada)
+- **🛡️ Envoy (8080)**: Punto de entrada único que dirige `/api/timeout` directo al API, `/api/sidecar` vía sidecar
+- **💻 API**: Endpoints separados con timeouts diferentes
 - **💻 API**: Endpoints separados con timeouts diferentes
 - **🐌 Slow Service**: Simula latencia configurable
 
@@ -110,6 +129,12 @@ Petición → ¿Cliente se cansa? → SÍ → Status 0
 - **Timeout**: Cliente controla directamente, API aplica fallback
 - **Sidecar**: Proxy protege con retries, API tiene más tiempo
 
+### 📊 Valores por Defecto
+| Patrón | Cliente | Proxy/API | API Interna |
+|---------|---------|-----------|-------------|
+| **Timeout** | Variable | - | 2000ms |
+| **Sidecar** | Variable | 2000ms | 2200ms |
+
 ## Requisitos
 
 - Node.js 20+
@@ -141,9 +166,8 @@ npm run dev
 
 **URLs importantes:**
 - Frontend: `http://localhost:5173`
-- Router: `http://localhost:8080` (punto de entrada único)
-- Envoy Admin (Timeout): `http://localhost:9901` (métricas del proxy timeout)
-- Envoy Admin (Sidecar): `http://localhost:9902` (métricas del proxy sidecar con retries)
+- Envoy: `http://localhost:8080` (punto de entrada único)
+- Envoy Admin: `http://localhost:9901` (stats, clusters, rutas en tiempo real)
 
 ### 3️⃣ Ejecutar la Demo
 

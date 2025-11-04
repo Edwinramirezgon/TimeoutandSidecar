@@ -53,7 +53,6 @@ services:
     image: envoyproxy/envoy:v1.31-latest
     ports:
       - "8081:8081"  # Puerto para patrón sidecar
-      - "9902:9901"   # Admin interface separada
     volumes:
       - ./envoy-sidecar.yaml:/etc/envoy/envoy.yaml:ro
     depends_on:
