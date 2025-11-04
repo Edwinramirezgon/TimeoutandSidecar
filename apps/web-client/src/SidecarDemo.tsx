@@ -104,6 +104,9 @@ export function SidecarDemo() {
           <h3>Resultado</h3>
           {result && (
             <div>
+              <div className="who-cut">
+                <strong>CORTÓ: {result.status === 0 ? 'CLIENTE' : result.status === 504 ? 'SIDECAR' : 'NADIE'}</strong>
+              </div>
               <p className="result-message">{getResultMessage()}</p>
               <p className="explanation">{getExplanation()}</p>
               <div className="metrics">
