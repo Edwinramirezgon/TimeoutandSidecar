@@ -62,7 +62,8 @@ Este proyecto demuestra:
 
 ### Componentes:
 - **🖥️ Frontend**: React con selector de patrón independiente
-- **🛡️ Envoy (8080)**: Punto de entrada único que dirige `/api/timeout` directo al API, `/api/sidecar` vía sidecar
+- **🔀 Proxy Router (8080)**: Punto de entrada único que dirige `/api/timeout` directo al API, `/api/sidecar` vía Envoy sidecar
+- **🛡️ Envoy Sidecar**: Solo intercepta patrón sidecar con retries automáticos
 - **💻 API**: Endpoints separados con timeouts diferentes
 - **💻 API**: Endpoints separados con timeouts diferentes
 - **🐌 Slow Service**: Simula latencia configurable
@@ -153,8 +154,9 @@ docker compose up --build
 **Servicios levantados:**
 - 🐌 `slow-svc` → Puerto 4000 (simula trabajo lento)
 - ⚙️ `service-api` → Puerto 3000 (lógica de negocio)  
-- 🛡️ `sidecar-envoy` → Puerto 8080 (**punto de entrada**)
-- 📊 Envoy Admin → Puerto 9901 (métricas)
+- 🔀 `proxy-router` → Puerto 8080 (**punto de entrada único**)
+- 🛡️ `envoy-sidecar` → Interno (solo para patrón sidecar)
+- 📊 Envoy Admin → Puerto 9901 (stats, clusters, rutas)
 
 ### 2️⃣ Levantar el Frontend
 
@@ -166,8 +168,8 @@ npm run dev
 
 **URLs importantes:**
 - Frontend: `http://localhost:5173`
-- Envoy: `http://localhost:8080` (punto de entrada único)
-- Envoy Admin: `http://localhost:9901` (stats, clusters, rutas en tiempo real)
+- Demo: `http://localhost:8080` (punto de entrada único)
+- Envoy Admin: `http://localhost:9901` (stats, clusters, rutas de Envoy)
 
 ### 3️⃣ Ejecutar la Demo
 
